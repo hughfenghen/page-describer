@@ -4,12 +4,13 @@ import ReactDOM from "react-dom";
 import 'antd/dist/antd.css'
 
 import QueryForm from '../../antd-parser/query-form'
-import Table from '../../antd-parser/table'
+import NormalTable from '../../antd-parser/normal-table'
 import QueryListDescriber from './desciber';
 
 const describer = new QueryListDescriber()
 
 function App() {
+  describer.usePageStore()
   return (<div
     style={{
       width: '80%',
@@ -17,7 +18,7 @@ function App() {
     }}
   >
     <QueryForm describer={describer} />
-    <Table describer={describer} />
+    <NormalTable describer={describer} />
   </div>)
 }
 

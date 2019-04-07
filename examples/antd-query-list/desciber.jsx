@@ -1,10 +1,19 @@
-import React from 'react'
+import React, { useReducer } from 'react'
 import { Divider, DatePicker, Icon, Input } from 'antd';
 import { stringify } from 'query-string';
 import { listener, page, fieldEnums, fieldAlias, queryCondition, tableColumn, columnRender } from '../../decorator';
 
 const { RangePicker } = DatePicker
 
+const initStore = {
+  query: {},
+  table: [],
+  pagination: {
+    pageIndex: 1,
+    pageSize: 10,
+    total: 100,
+  },
+}
 @page
 class QueryListDescriber {
 
@@ -81,11 +90,33 @@ class QueryListDescriber {
     return val
   }
 
-  @listener('query-list')
+  reducer(state, {type, payload}) {
+    switch (type) {
+      case 'queryFormChange':
+        return { ...state, query: { ...state.query, ...payload } };
+      case 'tableDataChange':
+        return { ...state, table: payload };
+      case 'paginationChange':
+        return { ...state, pagination: { ...state.pagination, ...payload } };
+      default:
+        throw new Error();
+    }
+  }
+
+  usePageStore() {
+    console.log('----usePageStore');
+    this.pageStore = useReducer(this.reducer, initStore)
+    // const [store, dispatch] = useReducer(this.reducer, initStore)
+
+    // return [ store, dispatch ]
+  }
+
   async onQuery(params) {
-    const resp = await fetch(`/api/task/list?${stringify(params)}`)
-    const { data } = await resp.json()
-    this.emit('table-data-change', data)
+    console.log('------onQuery', params);
+    // fetch
+    const { default: resp } = await import('./__mock__/list.js')
+
+    return resp.data
   }
 }
 
