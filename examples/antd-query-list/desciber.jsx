@@ -14,6 +14,25 @@ const initStore = {
     total: 100,
   },
 }
+
+function reducer(state, { type, payload }) {
+  console.log('-----reducer', type, payload);
+  switch (type) {
+    case 'queryFormChange':
+      return { ...state, query: { ...state.query, ...payload } };
+    case 'tableDataChange':
+      return { ...state, table: payload };
+    case 'paginationChange':
+      return { ...state, pagination: { ...state.pagination, ...payload } };
+    case 'activeRowChange':
+      return { ...state, activeRow: payload };
+    case 'editRowChange':
+      return { ...state, editRow: payload };
+    default:
+      throw new Error();
+  }
+}
+
 @page
 class QueryListDescriber {
 
@@ -58,7 +77,8 @@ class QueryListDescriber {
 
   @columnRender('country')
   renderCountryCol([val, record]) {
-    if (record === this.edittingRow) {
+    const [{ activeRow, editRow }, dispatch] = this.pageStore
+    if (record === editRow) {
       return (
         <div>
           <Input />
@@ -66,13 +86,12 @@ class QueryListDescriber {
           <Icon
             type="close"
             onClick={() => {
-              // this.edittingRow = null
-              // this.emit('force-update-table')
+              dispatch({ 'type': 'editRowChange', payload: null })
             }}
           />
         </div>
       )
-    } if (record === this.mouseActiveRecord && !this.edittingRow) {
+    } if (record === activeRow && !editRow) {
       return (
         <div>
           <span>{val}</span>
@@ -80,9 +99,8 @@ class QueryListDescriber {
             type="edit"
             style={{ marginLeft: 10 }}
             onClick={() => {
-              // this.edittingRow = record
-              // this.mouseActiveRecord = null
-              // this.emit('force-update-table')
+              dispatch({ type: 'editRowChange', payload: record })
+              dispatch({ type: 'activeRowChange', payload: null })
             }}
           />
         </div>)
@@ -90,25 +108,9 @@ class QueryListDescriber {
     return val
   }
 
-  reducer(state, {type, payload}) {
-    switch (type) {
-      case 'queryFormChange':
-        return { ...state, query: { ...state.query, ...payload } };
-      case 'tableDataChange':
-        return { ...state, table: payload };
-      case 'paginationChange':
-        return { ...state, pagination: { ...state.pagination, ...payload } };
-      default:
-        throw new Error();
-    }
-  }
-
   usePageStore() {
     console.log('----usePageStore');
-    this.pageStore = useReducer(this.reducer, initStore)
-    // const [store, dispatch] = useReducer(this.reducer, initStore)
-
-    // return [ store, dispatch ]
+    this.pageStore = useReducer(reducer, initStore)
   }
 
   async onQuery(params) {
@@ -118,6 +120,19 @@ class QueryListDescriber {
 
     return resp.data
   }
+
+  @listener('table-onRow-onMouseEnter')
+  onMouseEnter(record) {
+    const [, dispatch] = this.pageStore
+    dispatch({ type: 'activeRowChange', payload: record })
+  }
+
+  @listener('table-onRow-onMouseLeave')
+  onMouseLeave(record) {
+    const [, dispatch] = this.pageStore
+    dispatch({ type: 'activeRowChange', payload: null })
+  }
+  
 }
 
 export default QueryListDescriber

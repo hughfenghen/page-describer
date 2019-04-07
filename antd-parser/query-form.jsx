@@ -12,8 +12,9 @@ export default function QueryForm({ describer }) {
   const [{ query, pagination: { pageIndex, pageSize} }, dispatch] = describer.pageStore
  
   async function onQuery() { 
-    const { list } = await describer.onQuery({...query, pageIndex, pageSize }) 
+    const { list, total: ttl } = await describer.onQuery({...query, pageIndex, pageSize }) 
     dispatch({ type: 'tableDataChange', payload: list })
+    dispatch({ type: 'paginationChange', payload: { total: ttl } })
   }
 
   return (<div>
