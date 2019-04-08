@@ -12,12 +12,6 @@ export default function NormalTable({ describer }) {
 
   const [{ query, table: tableData, pagination: { pageIndex, pageSize, total } }, dispatch] = describer.pageStore
   
-  async function onQuery() {
-    const { list, total: ttl } = await describer.onQuery({ ...query, pageIndex, pageSize })
-    dispatch({ type: 'tableDataChange', payload: list })
-    dispatch({ type: 'paginationChange', payload: { total: ttl } })
-  }
-
   const tablePage = {
     current: pageIndex,
     pageSize,
@@ -25,12 +19,8 @@ export default function NormalTable({ describer }) {
     showSizeChanger: true,
     showTotal: (total) => `共 ${total} 页`,
     onChange: (pi, ps) => {
-      const payload = {
-        pageIndex: pi,
-        pageSize: ps,
-      }
-      dispatch({ type: 'paginationChange', payload})
-      onQuery()
+        dispatch({ type: 'paginationChange', payload: { pageIndex: pi, pageSize: ps } })
+      describer.onQuery()
     }
   }
 

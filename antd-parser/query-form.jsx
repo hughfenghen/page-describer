@@ -1,5 +1,5 @@
 import { Button, Input, Form } from 'antd';
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const FormItem = Form.Item
 
@@ -11,12 +11,6 @@ export default function QueryForm({ describer }) {
     }))
   const [{ query, pagination: { pageIndex, pageSize} }, dispatch] = describer.pageStore
  
-  async function onQuery() { 
-    const { list, total: ttl } = await describer.onQuery({...query, pageIndex, pageSize }) 
-    dispatch({ type: 'tableDataChange', payload: list })
-    dispatch({ type: 'paginationChange', payload: { total: ttl } })
-  }
-
   return (<div>
     <Form layout="inline">
       {formItems.map(({ field, fieldAlias, el, conditionOpts }) =>
@@ -35,11 +29,11 @@ export default function QueryForm({ describer }) {
         </FormItem>)}
     </Form>
     <Button
-      onClick={onQuery}
+      onClick={describer.onQuery}
       type="primary"
       style={{ margin: '10px 20px 0 0' }}
     >查询
-      </Button>
+    </Button>
     <Button onClick={() => { updateStore('query', {}) }}>重置</Button>
   </div>)
 }

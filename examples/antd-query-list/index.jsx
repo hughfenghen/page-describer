@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from "react-dom";
 
 import 'antd/dist/antd.css'
@@ -11,6 +11,8 @@ const describer = new QueryListDescriber()
 
 function App() {
   describer.usePageStore()
+  useEffect(() => { describer.onQuery() }, [])
+  
   return (<div
     style={{
       width: '80%',

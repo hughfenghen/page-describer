@@ -72,15 +72,14 @@ class QueryListDescriber {
   updateTimeRange
 
   @fieldAlias('操作')
-  @tableColumn(999, ()=> {}, { dataIndex: 'id' })
+  @tableColumn(999)
   operate
 
   @columnRender('country')
   renderCountryCol([val, record]) {
     const [{ activeRow, editRow }, dispatch] = this.pageStore
     if (record === editRow) {
-      return (
-        <div>
+      return (<>
           <Input />
           <Icon type="check" />
           <Icon
@@ -89,11 +88,9 @@ class QueryListDescriber {
               dispatch({ 'type': 'editRowChange', payload: null })
             }}
           />
-        </div>
-      )
+        </>)
     } if (record === activeRow && !editRow) {
-      return (
-        <div>
+      return (<>
           <span>{val}</span>
           <Icon
             type="edit"
@@ -103,7 +100,7 @@ class QueryListDescriber {
               dispatch({ type: 'activeRowChange', payload: null })
             }}
           />
-        </div>)
+        </>)
     }
     return val
   }
@@ -115,10 +112,14 @@ class QueryListDescriber {
 
   async onQuery(params) {
     console.log('------onQuery', params);
+    const [, dispatch] = this.pageStore
+
     // fetch
     const { default: resp } = await import('./__mock__/list.js')
+    const { list, total: ttl } = resp.data
 
-    return resp.data
+    dispatch({ type: 'tableDataChange', payload: list })
+    dispatch({ type: 'paginationChange', payload: { total: ttl } })
   }
 
   @listener('table-onRow-onMouseEnter')
