@@ -111,6 +111,15 @@ class QueryListDescriber {
     return (pageIndex - 1) * pageSize + idx + 1
   }
 
+  @columnRender('operate')
+  renderOperate([, { id }]) {
+    return (<>
+      <a>详情</a>
+      <Divider type="vertical" />
+      <a>删除</a>
+    </>)
+  }
+
   usePageStore() {
     console.log('----usePageStore');
     this.pageStore = useReducer(reducer, initStore)
