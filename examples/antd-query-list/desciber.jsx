@@ -105,6 +105,12 @@ class QueryListDescriber {
     return val
   }
 
+  @columnRender('index')
+  renderRowIndex([,, idx]) {
+    const [{ pagination: { pageIndex, pageSize }}] = this.pageStore
+    return (pageIndex - 1) * pageSize + idx + 1
+  }
+
   usePageStore() {
     console.log('----usePageStore');
     this.pageStore = useReducer(reducer, initStore)

@@ -175,7 +175,7 @@ function getQueryConditions() {
       return {
         ...factoryParams,
         render: typeof renderFactory === 'function' ?
-          renderFactory(factoryParams, this) :
+          renderFactory(factoryParams) :
           (renderFactory ? () => renderFactory : undefined)
       }
     })
@@ -206,7 +206,7 @@ function getTableColumns() {
       if (colRenders && colRenders[field]) {
         render = (...rArgs) => this[colRenders[field]](rArgs, factoryParams)
       } else if (renderFactory) {
-        render = renderFactory(factoryParams, this)
+        render = (...rArgs) => renderFactory(rArgs, factoryParams)
       }
       return {
         ...factoryParams,
