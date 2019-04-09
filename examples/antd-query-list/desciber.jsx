@@ -137,6 +137,7 @@ class QueryListDescriber {
     dispatch({ type: 'paginationChange', payload: { total: ttl } })
   }
 
+  // todo: 通过 NormalTable props 传入
   @listener('table-onRow-onMouseEnter')
   onMouseEnter(record) {
     const [, dispatch] = this.pageStore

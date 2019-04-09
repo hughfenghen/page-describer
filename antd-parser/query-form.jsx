@@ -7,7 +7,7 @@ export default function QueryForm({ describer }) {
   const formItems = describer.getQueryConditions()
     .map((it) => ({
       ...it,
-      el: it.render ? it.render() : <Input />,
+      el: it.render || <Input />,
     }))
   const [{ query, pagination: { pageIndex, pageSize} }, dispatch] = describer.pageStore
  

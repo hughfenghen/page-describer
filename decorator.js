@@ -77,7 +77,7 @@ export function fieldAlias(aliasName) {
  * @param {Object} conditionOpts 查询条件配置，将作为renderFactory的参数
  * @return {Function} 字段Decorator
  */
-export function queryCondition(index = 999, renderFactory, conditionOpts) {
+export function queryCondition(index = 999, render, conditionOpts) {
   const idx = Number(index)
   if (Number.isNaN(idx)) throw new Error(`'index' must be a number`)
 
@@ -85,7 +85,7 @@ export function queryCondition(index = 999, renderFactory, conditionOpts) {
     if (!target.__query_conditions__) target.__query_conditions__ = {}
     target.__query_conditions__[name] = {
       index: idx,
-      renderFactory,
+      render,
       conditionOpts,
     }
     return descriptor
@@ -114,6 +114,19 @@ export function tableColumn(index = 999, renderFactory, columnOpts = {}) {
   }
 }
 
+/**
+ * 为指定的字段（查询条件）自定义render函数
+ * @param {String} field 字段名称
+ */
+export function conditionRender(field) {
+  return (target, name, descriptor) => {
+    if (!target.__condition_columns_render__) 
+      target.__condition_columns_render__ = {}
+    
+    target.__condition_columns_render__[field] = name
+    return descriptor
+  }
+}
 /**
  * 为指定的字段（列）自定义render函数
  * @param {String} field 字段名称
@@ -160,23 +173,25 @@ export function listener(evtName) {
  * @return {Array<Object>} 每个元素包含field、fieldAlias、enums、conditionOpts、render?
  */
 function getQueryConditions() {
+  const conditionRenders = this.__condition_columns_render__ || {}
   return Object.entries(this.__query_conditions__ || {})
     .sort(([, a], [, b]) => a.index - b.index)
     .map(([field, {
-      renderFactory,
+      render,
       conditionOpts
     }]) => {
-      const factoryParams = {
+      const params = {
         field,
         fieldAlias: this.getFieldAlias(field),
         enums: this.getFieldEnums(field),
         conditionOpts,
       }
+      const rOrEl = conditionRenders[field] || render
       return {
-        ...factoryParams,
-        render: typeof renderFactory === 'function' ?
-          renderFactory(factoryParams) :
-          (renderFactory ? () => renderFactory : undefined)
+        ...params,
+        render: typeof rOrEl === 'function'
+          ? rOrEl(params) 
+          : rOrEl // 非函数 期望为Element
       }
     })
 }
