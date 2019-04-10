@@ -186,10 +186,10 @@ function getQueryConditions() {
         enums: this.getFieldEnums(field),
         conditionOpts,
       }
-      const rOrEl = conditionRenders[field] || render
+      const rOrEl = this[conditionRenders[field]] || render
       return {
         ...params,
-        render: typeof rOrEl === 'function'
+        element: typeof rOrEl === 'function'
           ? rOrEl(params) 
           : rOrEl // 非函数 期望为Element
       }
@@ -207,9 +207,9 @@ function getTableColumns() {
     .sort(([, a], [, b]) => a.index - b.index)
     .map(([field, {
       columnOpts,
-      renderFactory
+      preRender
     }]) => {
-      const factoryParams = {
+      const params = {
         field,
         columnOpts: Object.assign({
           dataIndex: field
@@ -219,12 +219,12 @@ function getTableColumns() {
       }
       let render
       if (colRenders && colRenders[field]) {
-        render = (...rArgs) => this[colRenders[field]](rArgs, factoryParams)
-      } else if (renderFactory) {
-        render = (...rArgs) => renderFactory(rArgs, factoryParams)
+        render = (...rArgs) => this[colRenders[field]](rArgs, params)
+      } else if (preRender) {
+        render = (...rArgs) => preRender(rArgs, params)
       }
       return {
-        ...factoryParams,
+        ...params,
         render,
       }
     })

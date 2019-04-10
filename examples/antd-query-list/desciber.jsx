@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react'
-import { Divider, DatePicker, Icon, Input } from 'antd';
+import { Divider, DatePicker, Icon, Input, Select } from 'antd';
 import { stringify } from 'query-string';
-import { listener, page, fieldEnums, fieldAlias, queryCondition, tableColumn, columnRender } from '../../decorator';
+import { listener, page, fieldEnums, fieldAlias, queryCondition, tableColumn, columnRender, conditionRender } from '../../decorator';
 
 const { RangePicker } = DatePicker
 
@@ -118,6 +118,14 @@ class QueryListDescriber {
       <Divider type="vertical" />
       <a>删除</a>
     </>)
+  }
+
+  @conditionRender('status')
+  renderStatusQuery({ enums }) {
+    return (<Select style={{ width: 100 }}>
+      {enums.map(([value, label]) => (
+        <Select.Option value={value}>{label}</Select.Option>))}
+      </Select>)
   }
 
   usePageStore() {
