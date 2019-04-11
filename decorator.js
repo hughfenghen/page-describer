@@ -190,7 +190,7 @@ function getQueryConditions() {
       return {
         ...params,
         element: typeof rOrEl === 'function'
-          ? rOrEl(params) 
+          ? rOrEl.call(this, params) 
           : rOrEl // 非函数 期望为Element
       }
     })

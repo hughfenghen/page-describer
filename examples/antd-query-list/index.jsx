@@ -11,7 +11,10 @@ const describer = new QueryListDescriber()
 
 function App() {
   describer.usePageStore()
-  useEffect(() => { describer.onQuery() }, [])
+  useEffect(() => { 
+    describer.onQuery() 
+    describer.fetchBasicInfo() 
+  }, [])
   
   return (<div
     style={{

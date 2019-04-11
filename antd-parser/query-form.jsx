@@ -29,7 +29,7 @@ export default function QueryForm({ describer }) {
         </FormItem>)}
     </Form>
     <Button
-      onClick={describer.onQuery}
+      onClick={describer.onQuery.bind(describer)}
       type="primary"
       style={{ margin: '10px 20px 0 0' }}
     >查询

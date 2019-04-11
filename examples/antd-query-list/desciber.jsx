@@ -6,6 +6,7 @@ import { listener, page, fieldEnums, fieldAlias, queryCondition, tableColumn, co
 const { RangePicker } = DatePicker
 
 const initStore = {
+  basicInfo: {},
   query: {},
   table: [],
   pagination: {
@@ -16,7 +17,6 @@ const initStore = {
 }
 
 function reducer(state, { type, payload }) {
-  console.log('-----reducer', type, payload);
   switch (type) {
     case 'queryFormChange':
       return { ...state, query: { ...state.query, ...payload } };
@@ -28,6 +28,8 @@ function reducer(state, { type, payload }) {
       return { ...state, activeRow: payload };
     case 'editRowChange':
       return { ...state, editRow: payload };
+    case 'basicInfoChange':
+      return { ...state, basicInfo: payload };
     default:
       throw new Error();
   }
@@ -120,6 +122,12 @@ class QueryListDescriber {
     </>)
   }
 
+  @columnRender('status')
+  renderStatusCol([val], { enums }) {
+    const entry = enums.find(([key]) => val === key) || []
+    return entry[1] || val
+  }
+
   @conditionRender('status')
   renderStatusQuery({ enums }) {
     return (<Select style={{ width: 100 }}>
@@ -128,14 +136,25 @@ class QueryListDescriber {
       </Select>)
   }
 
+  @conditionRender('country')
+  renderCountryQuery() {
+    console.log(3333, this.pageStore);
+    const [{ basicInfo: { country = [] }}] = this.pageStore
+    return <Select style={{ width: 100 }}>
+      {country.map(({ value, name }) => <Select.Option value={value}>
+          {name}
+        </Select.Option>)}
+    </Select>
+  }
+
   usePageStore() {
     console.log('----usePageStore');
     this.pageStore = useReducer(reducer, initStore)
   }
 
-  async onQuery(params) {
-    console.log('------onQuery', params);
-    const [, dispatch] = this.pageStore
+  async onQuery() {
+    const [{ query }, dispatch] = this.pageStore
+    console.log('------onQuery', query);
 
     // fetch
     const { default: resp } = await import('./__mock__/list.js')
@@ -143,6 +162,16 @@ class QueryListDescriber {
 
     dispatch({ type: 'tableDataChange', payload: list })
     dispatch({ type: 'paginationChange', payload: { total: ttl } })
+  }
+
+  async fetchBasicInfo() {
+    console.log('------fetchBasicInfo');
+    const [, dispatch] = this.pageStore
+
+    // fetch
+    const { default: resp } = await import('./__mock__/basic-info.js')
+
+    dispatch({ type: 'basicInfoChange', payload: resp.data })
   }
 
   // todo: 通过 NormalTable props 传入
