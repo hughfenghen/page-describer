@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 const FormItem = Form.Item
 
-export default function QueryForm({ describer }) {
+export default function Query({ describer }) {
   const formItems = describer.getQueryConditions()
     .map((it) => ({
       ...it,

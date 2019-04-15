@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from "react-dom";
 
 import 'antd/dist/antd.css'
 
-import QueryForm from '../../antd-parser/query-form'
-import NormalTable from '../../antd-parser/normal-table'
+import { Query, List } from '../../antd-parser/query-list'
 import QueryListDescriber from './desciber';
 
 const describer = new QueryListDescriber()
@@ -22,8 +21,8 @@ function App() {
       margin: '30px auto',
     }}
   >
-    <QueryForm describer={describer} />
-    <NormalTable describer={describer} />
+    <Query describer={describer} />
+    <List describer={describer} />
   </div>)
 }
 

@@ -1,7 +1,7 @@
 import { Table } from 'antd';
 import React from "react";
 
-export default function NormalTable({ describer }) {
+export default function List({ describer }) {
   const columns = describer.getTableColumns()
     .map(({ field, columnOpts: { dataIndex }, fieldAlias, render }) => ({
       key: field,
