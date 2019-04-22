@@ -5,36 +5,6 @@ import { listener, page, fieldEnums, fieldAlias, queryCondition, tableColumn, co
 
 const { RangePicker } = DatePicker
 
-const initStore = {
-  basicInfo: {},
-  query: {},
-  table: [],
-  pagination: {
-    pageIndex: 1,
-    pageSize: 10,
-    total: 100,
-  },
-}
-
-function reducer(state, { type, payload }) {
-  switch (type) {
-    case 'queryFormChange':
-      return { ...state, query: { ...state.query, ...payload } };
-    case 'tableDataChange':
-      return { ...state, table: payload };
-    case 'paginationChange':
-      return { ...state, pagination: { ...state.pagination, ...payload } };
-    case 'activeRowChange':
-      return { ...state, activeRow: payload };
-    case 'editRowChange':
-      return { ...state, editRow: payload };
-    case 'basicInfoChange':
-      return { ...state, basicInfo: payload };
-    default:
-      throw new Error();
-  }
-}
-
 @page
 class QueryListDescriber {
 
@@ -76,6 +46,17 @@ class QueryListDescriber {
   @fieldAlias('操作')
   @tableColumn(999)
   operate
+
+  reducer(state, { type, payload }) {
+    switch (type) {
+      case 'activeRowChange':
+        return { ...state, activeRow: payload };
+      case 'editRowChange':
+        return { ...state, editRow: payload };
+      default:
+        throw new Error('xxx');
+    }
+  }
 
   @columnRender('country')
   renderCountryCol([val, record]) {
@@ -149,7 +130,7 @@ class QueryListDescriber {
 
   usePageStore() {
     console.log('----usePageStore');
-    this.pageStore = useReducer(reducer, initStore)
+    // this.pageStore = useReducer()
   }
 
   async onQuery() {
