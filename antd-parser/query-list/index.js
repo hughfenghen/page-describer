@@ -1,4 +1,4 @@
-import { useReducer } from 'react'
+import React, { useReducer } from 'react'
 export { default as List } from './list.jsx'
 export { default as Query } from './query.jsx'
 
@@ -28,7 +28,10 @@ export function defultReducer(state, { type, payload }) {
   }
 }
 
+console.log('============ ant parser', React);
+
 export function useQueryList(extraReducer) {
+  console.log(222222222, extraReducer);
   return useReducer((...args) => {
     let state = defultReducer(...args)
     if (state === -1)

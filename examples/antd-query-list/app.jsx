@@ -35,7 +35,7 @@ function defultReducer(state, { type, payload }) {
   }
 }
 
-// export function useQueryList(extraReducer) {
+// function useQueryList(extraReducer) {
 //   return useReducer((...args) => {
 //     let state = defultReducer(...args)
 //     if (state === -1)
@@ -44,7 +44,10 @@ function defultReducer(state, { type, payload }) {
 //   }, initStore)
 // }
 
+console.log('============ app', React);
+
 function App() {
+  console.log(11111111, 'App');
   describer.pageStore = useQueryList(describer.reducer)
   // describer.usePageStore()
   // const [{ pagination }] = useReducer(defultReducer, {})
@@ -64,4 +67,5 @@ function App() {
   </div>)
 }
 
-export default hot(module)(App)
+export default App
+// export default hot(module)(App)
