@@ -1,6 +1,5 @@
-import React, { useReducer } from 'react'
+import React from 'react'
 import { Divider, DatePicker, Icon, Input, Select } from 'antd';
-import { stringify } from 'query-string';
 import { listener, page, fieldEnums, fieldAlias, queryCondition, tableColumn, columnRender, conditionRender } from '../../decorator';
 
 const { RangePicker } = DatePicker
@@ -47,6 +46,9 @@ class QueryListDescriber {
   @tableColumn(999)
   operate
 
+  // 引用 useQueryList（包含state, dispatch） 的返回值
+  pageStore = []
+
   reducer(state, { type, payload }) {
     switch (type) {
       case 'activeRowChange':
@@ -54,7 +56,7 @@ class QueryListDescriber {
       case 'editRowChange':
         return { ...state, editRow: payload };
       default:
-        throw new Error('xxx');
+        throw new Error('not found reduce type: ' + type);
     }
   }
 
@@ -105,8 +107,8 @@ class QueryListDescriber {
 
   @columnRender('status')
   renderStatusCol([val], { enums }) {
-    const entry = enums.find(([key]) => val === key) || []
-    return entry[1] || val
+    const item = enums.find(([key]) => val === key) || []
+    return item[1] || val
   }
 
   @conditionRender('status')
@@ -119,18 +121,12 @@ class QueryListDescriber {
 
   @conditionRender('country')
   renderCountryQuery() {
-    console.log(3333, this.pageStore);
     const [{ basicInfo: { country = [] }}] = this.pageStore
     return <Select style={{ width: 100 }}>
       {country.map(({ value, name }) => <Select.Option value={value}>
           {name}
         </Select.Option>)}
     </Select>
-  }
-
-  usePageStore() {
-    console.log('----usePageStore');
-    // this.pageStore = useReducer()
   }
 
   async onQuery() {
