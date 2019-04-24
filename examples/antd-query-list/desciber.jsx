@@ -115,7 +115,7 @@ class QueryListDescriber {
   renderStatusQuery({ enums }) {
     return (<Select style={{ width: 100 }}>
       {enums.map(([value, label]) => (
-        <Select.Option value={value}>{label}</Select.Option>))}
+        <Select.Option key={value}>{label}</Select.Option>))}
       </Select>)
   }
 
@@ -123,7 +123,7 @@ class QueryListDescriber {
   renderCountryQuery() {
     const [{ basicInfo: { country = [] }}] = this.pageStore
     return <Select style={{ width: 100 }}>
-      {country.map(({ value, name }) => <Select.Option value={value}>
+      {country.map(({ value, name }) => <Select.Option key={value}>
           {name}
         </Select.Option>)}
     </Select>
@@ -137,7 +137,10 @@ class QueryListDescriber {
     const { default: resp } = await import('./__mock__/list.js')
     const { list, total: ttl } = resp.data
 
-    dispatch({ type: 'tableDataChange', payload: list })
+    dispatch({ 
+      type: 'tableDataChange', 
+      payload: list.map((it) => Object.assign(it, { key: it.id })) 
+    })
     dispatch({ type: 'paginationChange', payload: { total: ttl } })
   }
 
@@ -151,14 +154,11 @@ class QueryListDescriber {
     dispatch({ type: 'basicInfoChange', payload: resp.data })
   }
 
-  // todo: 通过 NormalTable props 传入
-  @listener('table-onRow-onMouseEnter')
   onMouseEnter(record) {
     const [, dispatch] = this.pageStore
     dispatch({ type: 'activeRowChange', payload: record })
   }
 
-  @listener('table-onRow-onMouseLeave')
   onMouseLeave(record) {
     const [, dispatch] = this.pageStore
     dispatch({ type: 'activeRowChange', payload: null })

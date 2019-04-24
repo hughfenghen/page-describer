@@ -22,7 +22,19 @@ function App() {
     }}
   >
     <Query describer={describer} />
-    <List describer={describer} />
+    <List 
+      describer={describer} 
+      onRow={(record) => {
+        return {
+          onMouseEnter: () => {
+            describer.onMouseEnter(record)
+          },
+          onMouseLeave: () => {
+            describer.onMouseLeave(record)
+          }
+        };
+      }}
+    />
   </div>)
 }
 

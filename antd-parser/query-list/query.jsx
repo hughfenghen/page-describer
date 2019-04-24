@@ -1,5 +1,5 @@
 import { Button, Input, Form } from 'antd';
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const FormItem = Form.Item
 
@@ -9,11 +9,11 @@ export default function Query({ describer }) {
       ...it,
       el: it.element || <Input />,
     }))
-  const [{ query, pagination: { pageIndex, pageSize} }, dispatch] = describer.pageStore
+  const [{ query }, dispatch] = describer.pageStore
  
   return (<div>
     <Form layout="inline">
-      {formItems.map(({ field, fieldAlias, el, conditionOpts }) =>
+      {formItems.map(({ field, fieldAlias, el }) =>
         <FormItem
           label={fieldAlias}
           key={field}
