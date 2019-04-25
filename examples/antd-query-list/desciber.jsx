@@ -1,6 +1,6 @@
 import React from 'react'
 import { Divider, DatePicker, Icon, Input, Select } from 'antd';
-import { listener, page, fieldEnums, fieldAlias, queryCondition, tableColumn, columnRender, conditionRender } from '../../decorator';
+import { page, fieldEnums, fieldAlias, queryCondition, tableColumn, columnRender, conditionRender } from '../../decorator';
 
 const { RangePicker } = DatePicker
 

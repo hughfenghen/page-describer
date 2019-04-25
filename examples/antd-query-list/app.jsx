@@ -1,6 +1,7 @@
 
 import { hot } from 'react-hot-loader';
 import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom';
 
 import 'antd/dist/antd.css'
 import { Query, List, useQueryList } from '../../antd-parser/query-list'
@@ -39,4 +40,9 @@ function App() {
 }
 
 // todo: if env === dev
-export default hot(module)(App)
+const HotApp = hot(module)(App)
+
+ReactDOM.render(
+  <HotApp />,
+  document.getElementById("root")
+);
